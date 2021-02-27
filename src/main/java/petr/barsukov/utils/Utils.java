@@ -14,8 +14,8 @@ public final class Utils {
         return !message.isBlank();
     }
 
-    public static String transformMessageToString(Message msg) throws JMSException {
-        TextMessage textMessage = (TextMessage) msg;
+    public static String transformMessageToString(Message message) throws JMSException {
+        TextMessage textMessage = (TextMessage) message;
         return textMessage.getText();
     }
 

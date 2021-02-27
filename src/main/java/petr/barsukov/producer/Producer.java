@@ -1,11 +1,11 @@
 package petr.barsukov.producer;
 
-import petr.barsukov.parent.CommonAbstract;
+import petr.barsukov.parent.ParentProducerConsumer;
 
 import javax.jms.JMSException;
 import java.util.Objects;
 
-public class Producer extends CommonAbstract implements ProducerSender {
+public class Producer extends ParentProducerConsumer implements ProducerSender {
     public static final String DEFAULT_QUEUE = "default";
 
     @Override

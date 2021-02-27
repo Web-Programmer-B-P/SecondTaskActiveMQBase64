@@ -7,7 +7,7 @@ import javax.jms.*;
 
 @Getter
 @Setter
-public abstract class CommonAbstract {
+public class ParentProducerConsumer {
     protected Session session;
     protected Destination destination;
     protected MessageProducer producer;
