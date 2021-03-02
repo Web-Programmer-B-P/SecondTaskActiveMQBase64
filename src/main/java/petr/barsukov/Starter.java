@@ -9,6 +9,7 @@ import petr.barsukov.producer.Producer;
 import petr.barsukov.producer.ProducerBuilderImpl;
 import petr.barsukov.utils.Constant;
 import petr.barsukov.utils.Utils;
+
 import javax.jms.*;
 
 public class Starter {
@@ -43,25 +44,23 @@ public class Starter {
             Message message = consumer.receiveMessage();
             LOG.info(Constant.CONSUMER_RECEIVED_MESSAGE);
 
-            String decodeMessage = Utils.decodeBase64(Utils.transformMessageToString(message));
-            if (Utils.validateMessage(decodeMessage)) {
-                LOG.info(Constant.MESSAGE_VALIDATED_SUCCESS);
-                producer = new ProducerBuilderImpl()
-                        .createSession(activeMQSession)
-                        .createDestinationQueue(Constant.ANOTHER_QUEUE)
-                        .createProducer()
-                        .createNonPersistentMode()
-                        .setMessage(decodeMessage)
-                        .build();
-                producer.sendMessage();
-                LOG.info(Constant.MESSAGE_SENT_DESTINATIONS);
-            } else {
-                LOG.info(Constant.MESSAGE_IS_EMPTY);
-            }
+            String validMessage = Utils.getDecodeMessageOrException(message);
 
-            activeMQSession.closeSessionAndConnection();
+            LOG.info(Constant.MESSAGE_VALIDATED_SUCCESS);
+            producer = new ProducerBuilderImpl()
+                    .createSession(activeMQSession)
+                    .createDestinationQueue(Constant.ANOTHER_QUEUE)
+                    .createProducer()
+                    .createNonPersistentMode()
+                    .setMessage(validMessage)
+                    .build();
+            producer.sendMessage();
+            LOG.info(Constant.MESSAGE_SENT_DESTINATIONS);
+
+            activeMQSession.closeSession();
+            activeMQSession.closeConnection();
         } catch (JMSException jmsException) {
-            LOG.trace(jmsException.getStackTrace());
+            LOG.trace(jmsException.getMessage());
         }
     }
 }

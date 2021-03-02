@@ -10,13 +10,18 @@ public final class Utils {
     private Utils() {
     }
 
-    public static boolean validateMessage(String message) throws JMSException {
-        return !message.isBlank();
-    }
-
-    public static String transformMessageToString(Message message) throws JMSException {
-        TextMessage textMessage = (TextMessage) message;
-        return textMessage.getText();
+    public static String getDecodeMessageOrException(Message msg) throws JMSException {
+        String result = "";
+        if (msg instanceof TextMessage) {
+            TextMessage textMessage = (TextMessage) msg;
+            String decodeMessage = decodeBase64(textMessage.getText());
+            if (!decodeMessage.isBlank()) {
+                result = decodeMessage;
+            } else {
+                throw new JMSException(Constant.MESSAGE_IS_EMPTY);
+            }
+        }
+        return result;
     }
 
     public static String encodeBase64(String message) {
